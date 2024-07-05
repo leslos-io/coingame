@@ -6,12 +6,12 @@ const coinSound = '/smw_coin.wav'; // Path to the coin sound
 
 const GameBoard = ({ points, setPoints, className }) => {
   const [coins, setCoins] = useState([]);
-  const [tokenValue, setTokenValue] = useState(100); // Value of each token [1, 5, 10, 20, 50]
+  const [tokenValue, setTokenValue] = useState(500); // Value of each token [1, 5, 10, 20, 50]
   const [gameMode, setGameMode] = useState('swiping'); // 'swiping' or 'waterfall'
   const gameBoardRef = useRef(null);
   const audioRef = useRef(null); // Reference for the audio element
 
-  const tokenSize = 100; // Token size in pixels
+  const tokenSize = 125; // Token size in pixels
   const maxTokens = 50; // Maximum number of tokens on the screen at once
   const tokenInterval = 100; // Interval in milliseconds to add new tokens
 
