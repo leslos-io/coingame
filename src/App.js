@@ -9,10 +9,10 @@ function App() {
   const [level, setLevel] = useState(1);
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header points={points} level={level} />
-      <GameBoard points={points} setPoints={setPoints} />
-      <Footer />
+    <div className="relative h-screen w-screen overflow-hidden">
+      <Header points={points} level={level} className="fixed top-0 w-full h-16" />
+      <GameBoard points={points} setPoints={setPoints} className="absolute top-16 bottom-16 w-full" />
+      <Footer className="fixed bottom-0 w-full h-16" />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Header = ({ points, level }) => {
+const Header = ({ points, level, className  }) => {
   return (
-    <div className="w-full p-4 bg-gray-800 text-white flex justify-between items-center">
+    <div className={`bg-gray-800 text-white p-4 ${className}`}>
       <div>
         <span className="text-xl">Points: {points}</span>
         <span className="ml-4 text-xl">Level: {level}</span>

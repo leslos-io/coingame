@@ -4,10 +4,9 @@ import { motion } from 'framer-motion';
 const tokenImage = '/token.png'; // Path to the token image
 const coinSound = '/smw_coin.wav'; // Path to the coin sound
 
-
-const GameBoard = ({ points, setPoints }) => {
+const GameBoard = ({ points, setPoints, className }) => {
   const [coins, setCoins] = useState([]);
-  const [tokenValue, setTokenValue] = useState(100); // Value of each token [1, 5, 10, 20, 50
+  const [tokenValue, setTokenValue] = useState(100); // Value of each token [1, 5, 10, 20, 50]
   const [gameMode, setGameMode] = useState('swiping'); // 'swiping' or 'waterfall'
   const gameBoardRef = useRef(null);
   const audioRef = useRef(null); // Reference for the audio element
@@ -38,11 +37,30 @@ const GameBoard = ({ points, setPoints }) => {
     setPoints((prevPoints) => prevPoints + tokenValue);
     setCoins((prevCoins) => prevCoins.filter((coin) => coin.id !== id));
     // Play the coin sound
-    // Play the coin sound
-    if (audioRef.current) {
+    /*if (audioRef.current) {
       const audioClone = audioRef.current.cloneNode();
       audioClone.play();
-    }
+    }*/
+  };
+
+  // Check if the touch is over a coin
+  const checkTouchOverCoins = (event) => {
+    const touch = event.touches && event.touches[0];
+    if (!touch) return;
+
+    const { clientX, clientY } = touch;
+    coins.forEach((coin) => {
+      const coinElement = document.getElementById(`coin-${coin.id}`);
+      const rect = coinElement.getBoundingClientRect();
+      if (
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
+      ) {
+        handleSwipe(coin.id);
+      }
+    });
   };
 
   // Check if the mouse is over a coin
@@ -68,15 +86,18 @@ const GameBoard = ({ points, setPoints }) => {
     return () => clearInterval(interval);
   }, [coins, gameMode]);
 
-  // Add event listener for mousemove
+  // Add event listeners for touch and mouse events
   useEffect(() => {
     const gameBoard = gameBoardRef.current;
     if (gameMode === 'swiping') {
+      gameBoard.addEventListener('touchmove', checkTouchOverCoins);
       gameBoard.addEventListener('mousemove', checkMouseOverCoins);
     } else {
+      gameBoard.removeEventListener('touchmove', checkTouchOverCoins);
       gameBoard.removeEventListener('mousemove', checkMouseOverCoins);
     }
     return () => {
+      gameBoard.removeEventListener('touchmove', checkTouchOverCoins);
       gameBoard.removeEventListener('mousemove', checkMouseOverCoins);
     };
   }, [coins, gameMode]);
@@ -105,7 +126,7 @@ const GameBoard = ({ points, setPoints }) => {
   };
 
   return (
-    <div className="relative w-full flex-grow" ref={gameBoardRef}>
+    <div className={`relative w-full h-full overflow-hidden ${className}`} ref={gameBoardRef}>
       {coins.map((coin) => (
         <motion.img
           key={coin.id}
